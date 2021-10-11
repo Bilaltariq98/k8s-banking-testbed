@@ -193,7 +193,7 @@ app.get("/monitoring/data", (req, res) => {
         return;
     }
     Promise.all([
-        getMonitoringData("default"),
+        getMonitoringData(process.env?.APP_NAMESPACE ? process.env.APP_NAMESPACE : "default"),
         getMonitoringData("operations")
     ]).then(data => {
         return data.reduce((result, obj) => {
@@ -214,7 +214,7 @@ app.get("/monitoring/logs/:pod/:container", (req, res) => {
         res.status(503).send({ error: "Waiting for kubernetes to become available" });
         return;
     }
-    getLogs("default", req.params.pod, req.params.container).then(x => { res.send(x); });
+    getLogs(process.env?.APP_NAMESPACE ? process.env.APP_NAMESPACE : "default", req.params.pod, req.params.container).then(x => { res.send(x); });
 });
 
 app.listen(port, () => {
