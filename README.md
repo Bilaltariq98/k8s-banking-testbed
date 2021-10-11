@@ -4,7 +4,7 @@ This monorepo contains...
 
 ## frontend 
 
-Fronend application. 
+Dummy UI for banking services to be used in example problems
 
 ## istio (not a service)
 
