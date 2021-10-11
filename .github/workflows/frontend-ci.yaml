@@ -15,7 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        # node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -53,7 +54,6 @@ jobs:
           REGISTRY: bilal690
           REPOSITORY: frontend
           IMAGE_TAG: 0.1.develop
-        working-directory: frontend
         run: |
-          docker build -t REGISTRY/REPOSITORY:$IMAGE_TAG .
+          docker build -t REGISTRY/REPOSITORY:$IMAGE_TAG ./frontend/Dockerfile ./frontend
           docker push REGISTRY/REPOSITORY:$IMAGE_TAG
