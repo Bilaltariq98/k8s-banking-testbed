@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build, tag, and push image to DockerHub
-        working-directory: frontend
         run: |
           docker build -t bilal690/frontend:0.1.develop .
           docker push bilal690/frontend:0.1.develop
+        working-directory: frontend
