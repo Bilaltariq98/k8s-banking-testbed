@@ -3,16 +3,10 @@
 
 name: frontend CI
 
-env:
-  PATH: frontend
-  REGISTRY: bilal690
-  REPO: banking-frontend 
-  TAG: 0.1.develop
-
 on:
   push:
     paths:
-    - '$PATH/**'
+    - 'frontend/**'
 
 jobs:
   build:
@@ -32,11 +26,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: $PATH/package-lock.json
+        cache-dependency-path: frontend/package-lock.json
     - run: npm ci
-      working-directory: $PATH
+      working-directory: frontend
     - run: npm run build --if-present
-      working-directory: $PATH
+      working-directory: frontend
     # - run: npm test # Omitting Tests as this service does not have any currently. 
   push_image:
     needs: build
@@ -59,6 +53,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build, tag, and push image to DockerHub
+        env:
+          REGISTRY: bilal690
+          REPOSITORY: banking-frontend
+          IMAGE_TAG: 0.1.develop
         run: |
-          docker build -t $REGISTRY/$REPO:$TAG -f ./$PATH/Dockerfile ./$PATH
-          docker push $REGISTRY/$REPO:$TAG
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./frontend/Dockerfile ./frontend
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
