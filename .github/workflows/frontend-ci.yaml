@@ -50,11 +50,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build, tag, and push image to DockerHub
-        env:
-          REGISTRY: bilal690
-          REPOSITORY: frontend
-          IMAGE_TAG: 0.1.develop
         working-directory: frontend
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build -t bilal690/frontend:0.1.develop .
+          docker push bilal690/frontend:0.1.develop
