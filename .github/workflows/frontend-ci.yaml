@@ -53,6 +53,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./frontend
+          context: frontend
           file: ./frontend/Dockerfile
           tags: bilal690/frontend:0.1.develop
