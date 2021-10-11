@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const request = supertest("http://" + ( process.env["TEST_SUBNET"]
-                                            ? "contacts-service" + process.env["TEST_SUBNET"]
+                                            ? (process.env?.CONTACTS_SERVICE_URL ? process.env.CONTACTS_SERVICE_URL : "contacts-service") + process.env["TEST_SUBNET"]
                                             : "localhost:8080"));
 
 const contactFields = [

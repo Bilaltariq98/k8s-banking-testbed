@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const request = supertest("http://" + ( process.env["TEST_SUBNET"]
-                                            ? "customer-service" + process.env["TEST_SUBNET"]
+                                            ? (process.env?.CUSTOMER_SERVICE_URL ? process.env.CUSTOMER_SERVICE_URL : "customer-service") + process.env["TEST_SUBNET"]
                                             : "localhost:8080"));
 
 const customerFields = [
