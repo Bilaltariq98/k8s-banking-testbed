@@ -51,6 +51,5 @@ jobs:
       -
         name: Build, tag, and push image to DockerHub
         run: |
-          docker build -t bilal690/frontend:0.1.develop .
+          docker build -t bilal690/frontend:0.1.develop -f ./frontend/Dockerfile ./frontend
           docker push bilal690/frontend:0.1.develop
-        working-directory: frontend
