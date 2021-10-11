@@ -59,7 +59,7 @@ jobs:
           CONTACTS_REPOSITORY: banking-contacts
           CUSTOMER_REPOSITORY: banking-customer
           TRANSACTIONS_REPOSITORY: banking-transactions
-          IMAGE_TAG: 0.2.develop
+          IMAGE_TAG: 0.3.develop
         run: |
           docker build -t $REGISTRY/$ACCOUNTS_REPOSITORY:$IMAGE_TAG -f ./rest-services/Dockerfile --build-arg REST_SERVICE=instances/accounts.js ./rest-services
           docker build -t $REGISTRY/$CONTACTS_REPOSITORY:$IMAGE_TAG -f ./rest-services/Dockerfile --build-arg REST_SERVICE=instances/contacts.js ./rest-services

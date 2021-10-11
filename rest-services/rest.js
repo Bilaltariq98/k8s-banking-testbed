@@ -16,7 +16,7 @@ const db = { data: null, lastUpdated: null, errorMessage: null };
 
 // Which services do we need to connect to (name and URL)
 const services = {
-    data: "http://testdata-service"
+    data: process.env?.TESTDATA_SERVICE_URL ? process.env.TESTDATA_SERVICE_URL : "http://testdata-service"
 };
 
 /**
