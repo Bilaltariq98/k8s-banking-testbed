@@ -1,7 +1,7 @@
 {
   "name": "banking-ui",
   "version": "0.0.1",
-  "description": "Dummy UI for banking services to be used in example problems.",
+  "description": "Dummy UI for banking services to be used in example problems",
   "main": "server.js",
   "type": "module",
   "scripts": {
