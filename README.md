@@ -37,5 +37,5 @@ docker build -t guzo/banking-transactions -f ./rest-services/Dockerfile --build-
 
 <!-- docker build -t guzo/banking-frontend -f ./frontend/Dockerfile ./frontend -->
 <!-- docker build -t guzo/banking-monitoring -f ./monitoring/Dockerfile ./monitoring -->
-docker build -t guzo/banking-testdata -f ./testdata/Dockerfile ./testdata
+<!-- docker build -t guzo/banking-testdata -f ./testdata/Dockerfile ./testdata -->
 docker build -t guzo/banking-tests -f ./tests/Dockerfile ./tests
