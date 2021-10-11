@@ -55,5 +55,5 @@ jobs:
           REPOSITORY: frontend
           IMAGE_TAG: 0.1.develop
         run: |
-          docker build -t REGISTRY/REPOSITORY:$IMAGE_TAG ./frontend/Dockerfile ./frontend
-          docker push REGISTRY/REPOSITORY:$IMAGE_TAG
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./frontend/Dockerfile ./frontend
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
