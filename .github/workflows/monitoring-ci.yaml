@@ -56,7 +56,7 @@ jobs:
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-monitoring
-          IMAGE_TAG: 0.1.develop
+          IMAGE_TAG: 0.2.develop
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./monitoring/Dockerfile ./monitoring
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

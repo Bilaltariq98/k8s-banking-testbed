@@ -2,7 +2,7 @@ import dns from "dns";
 import axios from "axios";
 import fs from "fs";
 
-const templateServer = "frontend-service.default.svc.cluster.local";
+const templateServer = process.env?.FRONTEND_SERVICE_DNS ? process.env.FRONTEND_SERVICE_DNS : "frontend-service.default.svc.cluster.local";
 
 /**
  * Functions to control display of logging
