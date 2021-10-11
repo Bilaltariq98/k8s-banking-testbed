@@ -54,4 +54,5 @@ jobs:
         with:
           push: true
           context: ./frontend
+          file: ./frontend/Dockerfile
           tags: bilal690/frontend:0.1.develop
