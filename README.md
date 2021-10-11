@@ -35,7 +35,7 @@ docker build -t guzo/banking-contacts -f ./rest-services/Dockerfile --build-arg 
 docker build -t guzo/banking-customer -f ./rest-services/Dockerfile --build-arg REST_SERVICE=instances/customer.js ./rest-services
 docker build -t guzo/banking-transactions -f ./rest-services/Dockerfile --build-arg REST_SERVICE=instances/transactions.js ./rest-services
 
-docker build -t guzo/banking-frontend -f ./frontend/Dockerfile ./frontend
-docker build -t guzo/banking-monitoring -f ./monitoring/Dockerfile ./monitoring
+<!-- docker build -t guzo/banking-frontend -f ./frontend/Dockerfile ./frontend -->
+<!-- docker build -t guzo/banking-monitoring -f ./monitoring/Dockerfile ./monitoring -->
 docker build -t guzo/banking-testdata -f ./testdata/Dockerfile ./testdata
 docker build -t guzo/banking-tests -f ./tests/Dockerfile ./tests
