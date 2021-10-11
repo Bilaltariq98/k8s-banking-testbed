@@ -56,7 +56,7 @@ jobs:
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-tests
-          IMAGE_TAG: 0.1.develop
+          IMAGE_TAG: 0.2.develop
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./tests/Dockerfile ./tests
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
