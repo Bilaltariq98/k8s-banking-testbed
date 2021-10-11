@@ -54,6 +54,7 @@ jobs:
           REGISTRY: bilal690
           REPOSITORY: frontend
           IMAGE_TAG: 0.1.develop
+        working-directory: frontend
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./frontend/Dockerfile ./frontend
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
