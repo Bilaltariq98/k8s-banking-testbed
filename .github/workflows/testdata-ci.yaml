@@ -95,4 +95,4 @@ jobs:
           createPR: false
           message: 'Update Image in rollouts.yaml for testdata via CI'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          workDir: CD/testbed/testdata
+          workDir: CD
