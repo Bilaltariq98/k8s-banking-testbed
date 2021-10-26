@@ -52,11 +52,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Get Package Version
+        id: package_version
+        uses: ./testdata/
+        with: 
+          path: 'package.json'
+          prop_path: 'version'
+      -
         name: Build, tag, and push image to DockerHub
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-testdata
-          IMAGE_TAG: 0.3.develop
+          IMAGE_TAG: ${{steps.get_json_property.outputs.prop}}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
