@@ -71,7 +71,13 @@ jobs:
           IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG          
+      - name: Checkout Target Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Bilaltariq98/k8s-banking-testbed-argocd
+          path: ./
+          token: ${{ secrets.GITHUB_TOKEN }} 
       - 
         name: Update Image Version in the related Kustomize rollout.yaml
         uses: fjogeleit/yaml-update-action@master
