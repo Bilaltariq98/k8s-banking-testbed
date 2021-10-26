@@ -79,8 +79,8 @@ jobs:
           path: testbed/testdata
           token: ${{ secrets.GITHUB_TOKEN }} 
       -
-        name: Setup upterm session
-        uses: lhotari/action-upterm@v1  
+        name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       -
         name: Update Image Version in the related Kustomize rollout.yaml
         uses: fjogeleit/yaml-update-action@master
