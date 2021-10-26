@@ -78,9 +78,9 @@ jobs:
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           path: CD
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
-      -
-        name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+#       -
+#         name: Setup tmate session
+#         uses: mxschmitt/action-tmate@v3
       -
         name: Update Image Version in the related Kustomize rollout.yaml
         uses: fjogeleit/yaml-update-action@master
@@ -93,6 +93,6 @@ jobs:
           branch: develop
           masterBranchName: develop
           createPR: false
-          message: 'Update Image to ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} in rollouts.yaml for testdata'
+          message: 'Update Image in rollouts.yaml for testdata via CI'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           workDir: CD/testbed/testdata
