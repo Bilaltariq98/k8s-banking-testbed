@@ -85,11 +85,10 @@ jobs:
         name: Update Image Version in the related Kustomize rollout.yaml
         uses: fjogeleit/yaml-update-action@master
         with:
-          valueFile: 'develop/rollout.yaml'
+          valueFile: '${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
           propertyPath: 'spec.template.spec.containers.image'
           value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
-          branch: develop
           targetBranch: develop
           createPR: false
           message: 'Update Image to ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} in rollouts.yaml for testdata'
