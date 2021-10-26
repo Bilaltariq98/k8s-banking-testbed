@@ -1,9 +1,7 @@
 {
   "name": "banking-testdata",
   "version": "0.0.2",
-  "description": "Testdata mocks foname: Setup upterm session
-83
-        uses: lhotari/action-upterm@v1  r banking services to be used in example problems.",
+  "description": "Testdata mocks for banking services to be used in example problems.",
   "main": "index.js",
   "type": "module",
   "scripts": {
