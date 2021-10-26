@@ -87,12 +87,12 @@ jobs:
         with:
           valueFile: 'testbed/testdata/${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
           propertyPath: 'spec.template.spec.containers.image'
-          value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
+          value: '${{env.REGISTRY}}/${{env.REPOSITORY}}:${{env.IMAGE_TAG}}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           targetBranch: develop
           branch: develop
           masterBranchName: develop
           createPR: false
-          message: 'Update Image in rollouts.yaml for testdata via CI ${{IMAGE_TAG}}'
+          message: 'Update Image in rollouts.yaml for testdata via CI'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           workDir: CD/testbed/testdata
