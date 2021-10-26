@@ -87,7 +87,7 @@ jobs:
         with:
           valueFile: 'testbed/testdata/${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
           propertyPath: 'spec.template.spec.containers.0.image'
-          value: '${{env.REGISTRY}}/${{env.REPOSITORY}}:${{env.IMAGE_TAG}}'
+          value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           targetBranch: develop
           branch: develop
