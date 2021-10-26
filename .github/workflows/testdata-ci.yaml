@@ -12,7 +12,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      REGISTRY: bilal690
+      REPOSITORY: banking-testdata
+      IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
     strategy:
       matrix:
         # node-version: [12.x, 14.x, 16.x]
@@ -65,10 +68,6 @@ jobs:
         id: extract_branch
 #       -
 #         name: Build, tag, and push image to DockerHub
-        env:
-          REGISTRY: bilal690
-          REPOSITORY: banking-testdata
-          IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
 #         run: |
 #           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
 #           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG          
@@ -87,7 +86,7 @@ jobs:
         with:
           valueFile: 'testbed/testdata/${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
           propertyPath: 'spec.template.spec.containers.0.image'
-          value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
+          value: '${{env.REGISTRY}}/${{env.REPOSITORY}}:${{env.IMAGE_TAG}}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           targetBranch: develop
           branch: develop
