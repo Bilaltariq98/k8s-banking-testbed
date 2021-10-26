@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: Bilaltariq98/k8s-banking-testbed-argocd
-          path: ./
+          path: testbed/testdata
           token: ${{ secrets.GITHUB_TOKEN }} 
       - 
         name: Update Image Version in the related Kustomize rollout.yaml
@@ -88,6 +88,7 @@ jobs:
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           branch: deployment/${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
           targetBranch: develop
+          masterBranchName: develop
           createPR: true
           message: 'Update Image to ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} in rollouts.yaml for testdata'
           token: ${{ secrets.GITHUB_TOKEN }}
