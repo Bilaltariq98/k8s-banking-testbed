@@ -79,10 +79,9 @@ jobs:
           path: testbed/testdata
           token: ${{ secrets.GITHUB_TOKEN }} 
       -
-        run: echo pwd  
+        name: Setup upterm session
+        uses: lhotari/action-upterm@v1  
       -
-        run: echo ls -latr 
-      - 
         name: Update Image Version in the related Kustomize rollout.yaml
         uses: fjogeleit/yaml-update-action@master
         with:
