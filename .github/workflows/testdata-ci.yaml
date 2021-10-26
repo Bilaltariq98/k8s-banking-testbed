@@ -89,7 +89,7 @@ jobs:
           propertyPath: 'spec.template.spec.containers.image'
           value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
-          branch: deployment/${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
+          branch: develop
           targetBranch: develop
           createPR: false
           message: 'Update Image to ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} in rollouts.yaml for testdata'
