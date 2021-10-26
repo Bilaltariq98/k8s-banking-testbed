@@ -52,11 +52,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        uses: notiz-dev/github-action-json-property@release
         name: Get Package Version
         id: package_version
-        uses: ./testdata/
         with: 
-          path: 'package.json'
+          path: 'testdata/package.json'
           prop_path: 'version'
       -
         name: Build, tag, and push image to DockerHub
