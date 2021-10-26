@@ -59,11 +59,16 @@ jobs:
           path: 'testdata/package.json'
           prop_path: 'version'
       -
+        name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      -
         name: Build, tag, and push image to DockerHub
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-testdata
-          IMAGE_TAG: ${{steps.package_version.outputs.prop}}
+          IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
