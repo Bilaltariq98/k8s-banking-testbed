@@ -69,9 +69,9 @@ jobs:
           REGISTRY: bilal690
           REPOSITORY: banking-testdata
           IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
-          run: |
-            docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
-            docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG          
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./testdata/Dockerfile ./testdata
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG          
       - name: Checkout Target Repository
         uses: actions/checkout@v2
         with:
