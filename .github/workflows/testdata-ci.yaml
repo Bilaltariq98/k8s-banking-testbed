@@ -90,6 +90,8 @@ jobs:
           value: '${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}'
           repository: Bilaltariq98/k8s-banking-testbed-argocd
           targetBranch: develop
+          branch: develop
+          masterBranchName: develop
           createPR: false
           message: 'Update Image to ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG} in rollouts.yaml for testdata'
           token: ${{ secrets.GITHUB_TOKEN }}
