@@ -1,6 +1,6 @@
 {
   "name": "banking-testdata",
-  "version": "0.0.2",
+  "version": "0.0.4.develop",
   "description": "Testdata mocks for banking services to be used in example problems.",
   "main": "index.js",
   "type": "module",
