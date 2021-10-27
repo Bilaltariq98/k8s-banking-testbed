@@ -1,7 +1,7 @@
 {
   "name": "banking-monitoring",
   "version": "0.0.1",
-  "description": "Monitoring for banking services to be used in example problems.",
+  "description": "Monitoring for banking services to be used in example problems",
   "main": "server.js",
   "type": "module",
   "scripts": {
