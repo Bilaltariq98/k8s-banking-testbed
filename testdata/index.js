@@ -150,7 +150,7 @@ app.get("/testdata", (req, res) => {
     res.send({
         collections: Object.keys(db),
         _links: Object.keys(db).map(x => server + "/" + x),
-        _version: '0.3.develop'
+        _version: '0.0.4.develop'
     });
 });
 
