@@ -52,11 +52,44 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        uses: notiz-dev/github-action-json-property@release
+        name: Get Package Version
+        id: package_version
+        with: 
+          path: 'frontend/package.json'
+          prop_path: 'version'
+      -
+        name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      -
         name: Build, tag, and push image to DockerHub
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-tests
-          IMAGE_TAG: 0.4.develop
+          IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./tests/Dockerfile ./tests
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: Checkout Target Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Bilaltariq98/k8s-banking-testbed-argocd
+          path: CD
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
+      -
+        name: Update Image Version in the related Kustomize rollout.yaml
+        uses: fjogeleit/yaml-update-action@master
+        with:
+          valueFile: 'testbed/tests/${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
+          propertyPath: 'spec.template.spec.containers.0.image'
+          value: 'bilal690/banking-tests:${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}'
+          repository: Bilaltariq98/k8s-banking-testbed-argocd
+          targetBranch: develop
+          branch: develop
+          masterBranchName: develop
+          createPR: false
+          message: 'Update Image in rollouts.yaml for tests via CI'
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          workDir: CD
