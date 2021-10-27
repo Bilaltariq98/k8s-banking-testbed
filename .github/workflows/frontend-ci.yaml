@@ -52,11 +52,47 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        uses: notiz-dev/github-action-json-property@release
+        name: Get Package Version
+        id: package_version
+        with: 
+          path: 'frontend/package.json'
+          prop_path: 'version'
+      -
+        name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      -
         name: Build, tag, and push image to DockerHub
         env:
           REGISTRY: bilal690
           REPOSITORY: banking-frontend
-          IMAGE_TAG: 0.2.develop
+          IMAGE_TAG: ${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./frontend/Dockerfile ./frontend
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: Checkout Target Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Bilaltariq98/k8s-banking-testbed-argocd
+          path: CD
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
+#       -
+#         name: Setup tmate session
+#         uses: mxschmitt/action-tmate@v3
+      -
+        name: Update Image Version in the related Kustomize rollout.yaml
+        uses: fjogeleit/yaml-update-action@master
+        with:
+          valueFile: 'testbed/frontend/${{ steps.extract_branch.outputs.branch }}/rollout.yaml'
+          propertyPath: 'spec.template.spec.containers.0.image'
+          value: 'bilal690/banking-frontend:${{steps.package_version.outputs.prop}}.${{ steps.extract_branch.outputs.branch }}'
+          repository: Bilaltariq98/k8s-banking-testbed-argocd
+          targetBranch: develop
+          branch: develop
+          masterBranchName: develop
+          createPR: false
+          message: 'Update Image in rollouts.yaml for frontend via CI'
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          workDir: CD
