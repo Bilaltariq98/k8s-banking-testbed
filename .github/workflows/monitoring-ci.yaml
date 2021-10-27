@@ -56,7 +56,7 @@ jobs:
         name: Get Package Version
         id: package_version
         with: 
-          path: 'frontend/package.json'
+          path: 'monitoring/package.json'
           prop_path: 'version'
       -
         name: Extract branch name
