@@ -434,7 +434,7 @@ const getUpdateIdObject = (collection, value) => {
 
 const consumer = async (collection) => {
 
-    clientId = `consumer-${env.process.HOSTNAME}`;
+    clientId = `consumer-${process.env.HOSTNAME}`;
     kafka = new Kafka({ clientId, brokers });
     const consumer = kafka.consumer({ groupId: clientId })
     const consume = async () => {
