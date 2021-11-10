@@ -167,7 +167,7 @@ const getAllItems = (collection, req, res) => {
  */
 const getSpecifiedItems = (collection, req, res) => {
     const pk = collection.replace(/s$/, "Id");
-    const queryResult = dbQuery({[pk]: req.params.id.split(",")});
+    const queryResult = dbQuery({ [pk]: req.params.id.split(",") });
 
     if (queryResult.data.length === 0) {
         res.sendStatus(404);
@@ -193,7 +193,7 @@ const getRelatedItems = (collection, req, res) => {
 
     // Get the items from the collection
     const pk = collection.replace(/s$/, "Id");
-    const queryResult = dbQuery({[pk]: req.params.id.split(",")});
+    const queryResult = dbQuery({ [pk]: req.params.id.split(",") });
     if (queryResult.length === 0) {
         res.sendStatus(404);
         return;
@@ -300,6 +300,7 @@ const healthz = (req, res) => {
 const restServer = (collection, relatedServers) => {
 
     const app = express();
+    app.use(express.json())
     app.use(morgan(logFormat));
 
     app.get("/" + collection, (req, res) => {
@@ -321,6 +322,7 @@ const restServer = (collection, relatedServers) => {
     // Setup Kafka endpoints - override the clientId / topic names
     clientId = `produce-${collection}`;
     kafka = new Kafka({ clientId, brokers });
+    topic = collection;
     producer = kafka.producer();
     log.info('brokers')
     log.info(brokers)
@@ -331,34 +333,61 @@ const restServer = (collection, relatedServers) => {
     app.post("/" + collection + "/db", (req, res) => {
         producer.send({
             topic,
-            messages: JSON.stringify({
-                "operation": "create", 
-                "collection": collection, 
-                data: req.data
-            }),
+            messages: [
+                {
+                    key: String(`data`),
+                    value: JSON.stringify({
+                        "operation": "create",
+                        "collection": collection,
+                        data: req.body
+                    }),
+                }
+            ],
         })
+        res.status(200).send({
+            status: "healthy",
+            "last-updated": db.lastUpdated
+        });
     });
 
     app.put("/" + collection + "/db", (req, res) => {
         producer.send({
             topic,
-            messages: JSON.stringify({
-                "operation": "update", 
-                "collection": collection, 
-                data: req.data
-            }),
+            messages: [
+                {
+                    key: String(`data`),
+                    value: JSON.stringify({
+                        "operation": "update",
+                        "collection": collection,
+                        data: req.body
+                    }),
+                }
+            ],
         })
+        res.status(200).send({
+            status: "healthy",
+            "last-updated": db.lastUpdated
+        });
     });
 
     app.delete("/" + collection + "/db", (req, res) => {
         producer.send({
             topic,
-            messages: JSON.stringify({
-                "operation": "delete", 
-                "collection": collection, 
-                data: req.data
-            }),
+            messages: [
+                {
+                    key: String(`data`),
+                    value: JSON.stringify({
+                        "operation": "delete",
+                        "collection": collection,
+                        data: req.body
+                    }),
+                }
+            ],
         })
+        res.status(200).send({
+            status: "healthy",
+            "last-updated": db.lastUpdated
+        });
     });
 
 
@@ -375,12 +404,35 @@ const restServer = (collection, relatedServers) => {
     app.listen(port, () => {
         log.info("Server listening at " + server);
     });
+    consumer(collection);
 };
 
+// Based on the collection constructs an object to p
+const getUpdateIdObject = (collection, value) => {
+    switch (collection) {
+        case "accounts":
+            return { "accountId": value["accountId"] }
+            break;
 
+        case "contacts":
+            return { "contactId": value["contactId"] }
+            break;
 
+        case "customers":
+            return { "customerId": value["customerId"] }
+            break;
 
-const consumer = async (collection ) => {
+        case "transactions":
+            return { "transactionId": value["transactionId"] }
+            break;
+
+        default:
+            log.error("No collection matched!");
+            break;
+    }
+}
+
+const consumer = async (collection) => {
 
     clientId = `consumer-${collection}`;
     kafka = new Kafka({ clientId, brokers });
@@ -389,21 +441,21 @@ const consumer = async (collection ) => {
         await consumer.connect()
         await consumer.subscribe({ topic })
         await consumer.run({
-    
+
             eachMessage: ({ message }) => {
                 log.info(`received message: ${message.value}`)
+                let data = JSON.parse(message.value);
                 try {
-                    let data = JSON.parse(message);
                     switch (data.operation) {
                         case 'create':
                             db.data.insert(data.data);
                             break;
                         case 'update':
-                            log.info('Update Operation');
+                            db.data(getUpdateIdObject(collection, data.data)).update(data.data);
                             break;
                         case 'delete':
                             db.data(data.data).remove();
-                            break;                
+                            break;
                         default:
                             log.error('No operation selected');
                             break;
