@@ -297,7 +297,7 @@ const healthz = (req, res) => {
  * 4) Start server
  *
  */
-const restServer = async(collection, relatedServers) => {
+const restServer = (collection, relatedServers) => {
 
     const app = express();
     app.use(morgan(logFormat));
@@ -322,7 +322,11 @@ const restServer = async(collection, relatedServers) => {
     clientId = `produce-${collection}`;
     kafka = new Kafka({ clientId, brokers });
     producer = kafka.producer();
-    await producer.connect();
+    log.info('brokers')
+    log.info(brokers)
+    log.info('clientId')
+    log.info(clientId)
+    producer.connect();
 
     app.post("/" + collection + "/db", (req, res) => {
         producer.send({
