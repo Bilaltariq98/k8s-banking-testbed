@@ -3,6 +3,7 @@ import morgan from "morgan";
 import { taffy as TAFFY } from "taffydb";
 import axios from "axios";
 import dns from "dns";
+import { Kafka } from "kafkajs";
 
 // Details of this server
 const port = 3000;
@@ -18,6 +19,18 @@ const db = { data: null, lastUpdated: null, errorMessage: null };
 const services = {
     data: process.env?.TESTDATA_SERVICE_URL ? process.env.TESTDATA_SERVICE_URL : "http://testdata-service"
 };
+
+// Kafka Setup - Manipulate during initalization
+// the client ID lets kafka know who's producing the messages
+let clientId = "produce-nodejs"
+// we can define the list of brokers in the cluster
+let brokers = [process.env?.BROKER_URL ? process.env.BROKER_URL : "172.20.0.2:32248"]
+// this is the topic to which we want to write messages
+let topic = process.env?.KAFKA_TOPIC_NAME ? process.env.KAFKA_TOPIC_NAME : "kafka-topic"
+
+// initialize a new kafka client and initialize a producer from it
+let kafka = {}
+let producer = {}
 
 /**
  * Enrich log messages with timestamp and host
@@ -305,6 +318,46 @@ const restServer = (collection, relatedServers) => {
         healthz(req, res);
     });
 
+    // Setup Kafka endpoints - override the clientId / topic names
+    clientId = `produce-${collection}`;
+    kafka = new Kafka({ clientId, brokers });
+    producer = kafka.producer();
+    await producer.connect();
+
+    app.post("/" + collection + "/db", (req, res) => {
+        producer.send({
+            topic,
+            messages: JSON.stringify({
+                "operation": "create", 
+                "collection": collection, 
+                data: req.data
+            }),
+        })
+    });
+
+    app.put("/" + collection + "/db", (req, res) => {
+        producer.send({
+            topic,
+            messages: JSON.stringify({
+                "operation": "update", 
+                "collection": collection, 
+                data: req.data
+            }),
+        })
+    });
+
+    app.delete("/" + collection + "/db", (req, res) => {
+        producer.send({
+            topic,
+            messages: JSON.stringify({
+                "operation": "delete", 
+                "collection": collection, 
+                data: req.data
+            }),
+        })
+    });
+
+
     // Add the servers for related collections to our list of services
     Object.keys(relatedServers).map(k => { services[k] = relatedServers[k]; });
 
@@ -319,5 +372,47 @@ const restServer = (collection, relatedServers) => {
         log.info("Server listening at " + server);
     });
 };
+
+
+
+
+const consumer = (collection ) => {
+
+    clientId = `consumer-${collection}`;
+    kafka = new Kafka({ clientId, brokers });
+    const consumer = kafka.consumer({ groupId: clientId })
+    const consume = async () => {
+        await consumer.connect()
+        await consumer.subscribe({ topic })
+        await consumer.run({
+    
+            eachMessage: ({ message }) => {
+                log.info(`received message: ${message.value}`)
+                try {
+                    let data = JSON.parse(message);
+                    switch (data.operation) {
+                        case 'create':
+                            db.data.insert(data.data);
+                            break;
+                        case 'update':
+                            log.info('Update Operation');
+                            break;
+                        case 'delete':
+                            db.data(data.data).remove();
+                            break;                
+                        default:
+                            log.error('No operation selected');
+                            break;
+                    }
+                } catch (e) {
+                    log.error(e);
+                }
+            },
+        })
+    }
+    consume().catch((err) => {
+        log.error("error in consumer: ", err)
+    })
+}
 
 export { restServer };
